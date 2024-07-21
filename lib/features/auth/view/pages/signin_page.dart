@@ -26,7 +26,7 @@ class _SigninState extends ConsumerState<Signin> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-    formKey.currentState!.validate();
+    formKey.currentState?.validate();
   }
 
   @override

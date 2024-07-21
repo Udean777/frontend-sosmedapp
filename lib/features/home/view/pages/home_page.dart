@@ -1,6 +1,6 @@
 import 'package:client/core/theme/app_palette.dart';
 import 'package:client/features/post/view/pages/posts_page.dart';
-import 'package:client/features/upload/view/pages/upload_post.dart';
+import 'package:client/features/search/view/pages/search_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +17,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   final pages = const [
     PostsPage(),
-    UploadPost(),
+    SearchPage(),
+    SearchPage(),
   ];
 
   @override
@@ -33,7 +34,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         },
         items: [
           BottomNavigationBarItem(
-            label: "Home",
+            label: "",
             icon: Image.asset(
               selectedIndex == 0
                   ? 'assets/images/home_filled.png'
@@ -44,11 +45,21 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
           BottomNavigationBarItem(
-            label: "Upload",
+            label: "",
             icon: Icon(
               selectedIndex == 1
-                  ? CupertinoIcons.add_circled_solid
-                  : CupertinoIcons.add_circled,
+                  ? CupertinoIcons.search_circle_fill
+                  : CupertinoIcons.search_circle,
+              size: 25,
+              color: Palette.whiteColor,
+            ),
+          ),
+          BottomNavigationBarItem(
+            label: "",
+            icon: Icon(
+              selectedIndex == 2
+                  ? CupertinoIcons.person_circle_fill
+                  : CupertinoIcons.person_circle,
               size: 25,
               color: Palette.whiteColor,
             ),

@@ -1,0 +1,24 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'posts_viewmodel.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+String _$getAllPostsHash() => r'ed0ae1cfae8ecdda1061c296cbd9045108e4b93f';
+
+/// See also [getAllPosts].
+@ProviderFor(getAllPosts)
+final getAllPostsProvider = AutoDisposeFutureProvider<List<PostModel>>.internal(
+  getAllPosts,
+  name: r'getAllPostsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$getAllPostsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GetAllPostsRef = AutoDisposeFutureProviderRef<List<PostModel>>;
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

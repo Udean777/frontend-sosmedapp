@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:client/core/theme/app_palette.dart';
@@ -73,7 +75,7 @@ class _UploadPostState extends ConsumerState<UploadPost> {
             },
             style: ButtonStyle(
               backgroundColor:
-                  MaterialStateProperty.all<Color>(Palette.gradient2),
+                  WidgetStateProperty.all<Color>(Palette.gradient2),
             ),
             child: const Text(
               "Post",
@@ -141,8 +143,9 @@ class _UploadPostState extends ConsumerState<UploadPost> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             GestureDetector(
-                                onTap: selectImage,
-                                child: const Icon(CupertinoIcons.photo)),
+                              onTap: selectImage,
+                              child: const Icon(CupertinoIcons.photo),
+                            ),
                             IconButton(
                               onPressed: () {},
                               icon: const Icon(CupertinoIcons.videocam),
