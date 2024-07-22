@@ -65,7 +65,8 @@ class _UploadPostState extends ConsumerState<UploadPost> {
           ElevatedButton(
             onPressed: () async {
               if (formKey.currentState!.validate() && selectedImage != null) {
-                ref.read(uploadViewmodelProvider.notifier).uploadPost(
+                await ref.read(uploadViewmodelProvider.notifier).uploadPost(
+                      context: context,
                       selectedImage: selectedImage!,
                       caption: captionController.text,
                     );

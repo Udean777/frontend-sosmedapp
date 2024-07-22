@@ -2,6 +2,7 @@
 
 import 'package:client/core/theme/app_palette.dart';
 import 'package:client/core/widgets/loading.dart';
+import 'package:client/features/post/view/widgets/post_item.dart';
 import 'package:client/features/post/viewmodel/posts_viewmodel.dart';
 import 'package:client/features/upload/view/pages/upload_post.dart';
 import 'package:flutter/cupertino.dart';
@@ -55,48 +56,12 @@ class PostsPage extends ConsumerWidget {
 
                           print(post);
 
-                          return Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  height: 300,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(post.image_url),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      post.user.username,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                      post.caption,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
+                          return PostItem(
+                            username: post.user.username,
+                            timeAgo: '15h',
+                            caption: post.caption,
+                            imageUrl: post.image_url,
+                            // profileImageUrl: CupertinoIcons.profile_circled,
                           );
                         },
                       ),
