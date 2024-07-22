@@ -1,16 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
+import 'package:client/features/post/models/save_post_model.dart';
+
 class UserModel {
   final String username;
   final String email;
   final String id;
   final String token;
+  final List<SavePostModel> savedPosts;
   UserModel({
     required this.username,
     required this.email,
     required this.id,
     required this.token,
+    required this.savedPosts,
   });
 
   UserModel copyWith({
@@ -18,12 +24,14 @@ class UserModel {
     String? email,
     String? id,
     String? token,
+    List<SavePostModel>? savedPosts,
   }) {
     return UserModel(
       username: username ?? this.username,
       email: email ?? this.email,
       id: id ?? this.id,
       token: token ?? this.token,
+      savedPosts: savedPosts ?? this.savedPosts,
     );
   }
 
@@ -33,6 +41,7 @@ class UserModel {
       'email': email,
       'id': id,
       'token': token,
+      'savedPosts': savedPosts.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -42,6 +51,13 @@ class UserModel {
       email: map['email'] ?? "",
       id: map['id'] ?? "",
       token: map['token'] ?? "",
+      savedPosts: map['savedPosts'] != null
+          ? List<SavePostModel>.from(
+              (map['savedPosts'] as List<dynamic>).map(
+                (x) => SavePostModel.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [], // Handle null case for savedPosts
     );
   }
 
@@ -52,7 +68,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(username: $username, email: $email, id: $id, token: $token)';
+    return 'UserModel(username: $username, email: $email, id: $id, token: $token, savedPosts: $savedPosts)';
   }
 
   @override
@@ -62,11 +78,16 @@ class UserModel {
     return other.username == username &&
         other.email == email &&
         other.id == id &&
-        other.token == token;
+        other.token == token &&
+        listEquals(other.savedPosts, savedPosts);
   }
 
   @override
   int get hashCode {
-    return username.hashCode ^ email.hashCode ^ id.hashCode ^ token.hashCode;
+    return username.hashCode ^
+        email.hashCode ^
+        id.hashCode ^
+        token.hashCode ^
+        savedPosts.hashCode;
   }
 }

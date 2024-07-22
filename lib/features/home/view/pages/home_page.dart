@@ -1,5 +1,6 @@
 import 'package:client/core/theme/app_palette.dart';
 import 'package:client/features/post/view/pages/posts_page.dart';
+import 'package:client/features/saved/view/pages/saved_posts_pages.dart';
 import 'package:client/features/search/view/pages/search_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   final pages = const [
     PostsPage(),
     SearchPage(),
-    SearchPage(),
+    SavedPostsPages(),
   ];
 
   @override
@@ -58,8 +59,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             label: "",
             icon: Icon(
               selectedIndex == 2
-                  ? CupertinoIcons.person_circle_fill
-                  : CupertinoIcons.person_circle,
+                  ? CupertinoIcons.bookmark_solid
+                  : CupertinoIcons.bookmark,
               size: 25,
               color: Palette.whiteColor,
             ),

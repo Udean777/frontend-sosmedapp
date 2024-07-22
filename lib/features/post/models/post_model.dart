@@ -40,9 +40,9 @@ class PostModel {
 
   factory PostModel.fromMap(Map<String, dynamic> map) {
     return PostModel(
-      id: map['id'] as String,
-      image_url: map['image_url'] as String,
-      caption: map['caption'] as String,
+      id: map['id'] ?? "",
+      image_url: map['image_url'] ?? "",
+      caption: map['caption'] ?? "",
       user: UserModel.fromMap(map['user'] as Map<String, dynamic>),
     );
   }
