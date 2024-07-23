@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:client/core/constants/server_constants.dart';
 import 'package:client/core/failure/failure_app.dart';
+import 'package:client/features/post/models/like_post_model.dart';
 import 'package:client/features/post/models/post_model.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -87,6 +88,58 @@ class PostRepository {
 
       for (var map in resBodyMap) {
         posts.add(PostModel.fromMap(map));
+      }
+
+      return Right(posts);
+    } catch (e) {
+      return Left(FailureApp(e.toString()));
+    }
+  }
+
+  Future<Either<FailureApp, bool>> likedPost({
+    required String token,
+    required String postId,
+  }) async {
+    try {
+      final res = await http.post(
+          Uri.parse("${ServerConstants.serverUrl}/post/liked"),
+          headers: {"Content-Type": "application/json", "x-auth-token": token},
+          body: jsonEncode({"post_id": postId}));
+
+      var resBodyMap = jsonDecode(res.body);
+
+      if (res.statusCode != 200) {
+        resBodyMap = resBodyMap as Map<String, dynamic>;
+        return Left(FailureApp(resBodyMap["detail"]));
+      }
+
+      return Right(resBodyMap["message"]);
+    } catch (e) {
+      return Left(FailureApp(e.toString()));
+    }
+  }
+
+  Future<Either<FailureApp, List<LikePostModel>>> getLikedPost({
+    required String token,
+  }) async {
+    try {
+      final res = await http.get(
+          Uri.parse("${ServerConstants.serverUrl}/post/list/liked"),
+          headers: {"Content-Type": "application/json", "x-auth-token": token});
+
+      var resBodyMap = jsonDecode(res.body);
+
+      if (res.statusCode != 200) {
+        resBodyMap = resBodyMap as Map<String, dynamic>;
+        return Left(FailureApp(resBodyMap["detail"]));
+      }
+
+      resBodyMap = resBodyMap as List;
+
+      List<LikePostModel> posts = [];
+
+      for (var map in resBodyMap) {
+        posts.add(LikePostModel.fromMap(map));
       }
 
       return Right(posts);

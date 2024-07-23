@@ -15,10 +15,11 @@ class PostsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userSaved = ref
-        .watch(currentUserNotifierProvider.select((data) => data!.savedPosts));
+    final user = ref.watch(currentUserNotifierProvider);
+    final userSaved = user?.savedPosts ?? [];
+    final userLiked = user?.likedPosts ?? [];
 
-    // print("User saved (in build): $userSaved");
+    print("User saved (in build): $userLiked");
 
     return Scaffold(
       appBar: AppBar(
@@ -130,9 +131,26 @@ class PostsPage extends ConsumerWidget {
                                 Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(CupertinoIcons.heart),
-                                      color: Palette.greyColor,
+                                      onPressed: () async {
+                                        await ref
+                                            .read(
+                                                postsViewmodelProvider.notifier)
+                                            .likedPost(postId: post.id);
+                                      },
+                                      icon: Icon(userLiked
+                                              .where((save) =>
+                                                  save.post_id == post.id)
+                                              .toList()
+                                              .isNotEmpty
+                                          ? CupertinoIcons.heart_fill
+                                          : CupertinoIcons.heart),
+                                      color: userLiked
+                                              .where((like) =>
+                                                  like.post_id == post.id)
+                                              .toList()
+                                              .isNotEmpty
+                                          ? Palette.gradient2
+                                          : Palette.greyColor,
                                     ),
                                     IconButton(
                                       onPressed: () {},

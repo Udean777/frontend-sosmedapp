@@ -35,7 +35,22 @@ final getSavedPostProvider =
 );
 
 typedef GetSavedPostRef = AutoDisposeFutureProviderRef<List<PostModel>>;
-String _$postsViewmodelHash() => r'0ad43e11eb4a40befe3bb5d729ef7529e2f71ce2';
+String _$getLikedPostHash() => r'5fa159b922de862e95cf72f4fdbf1a8a585d07a6';
+
+/// See also [getLikedPost].
+@ProviderFor(getLikedPost)
+final getLikedPostProvider =
+    AutoDisposeFutureProvider<List<LikePostModel>>.internal(
+  getLikedPost,
+  name: r'getLikedPostProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$getLikedPostHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GetLikedPostRef = AutoDisposeFutureProviderRef<List<LikePostModel>>;
+String _$postsViewmodelHash() => r'09d4e4ba47114101a2af17d1565ba8a54c7cd810';
 
 /// See also [PostsViewmodel].
 @ProviderFor(PostsViewmodel)

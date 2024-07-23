@@ -57,7 +57,13 @@ class PostModel {
       user: map['user'] != null
           ? UserModel.fromMap(map['user'] as Map<String, dynamic>)
           : UserModel(
-              id: '', username: '', email: '', token: "", savedPosts: []),
+              id: '',
+              username: '',
+              email: '',
+              token: "",
+              savedPosts: [],
+              likedPosts: [],
+            ),
       created_at: map['created_at'] != null
           ? DateTime.tryParse(map['created_at'] as String) ?? DateTime.now()
           : DateTime.now(),

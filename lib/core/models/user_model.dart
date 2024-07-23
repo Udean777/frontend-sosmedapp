@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:client/features/post/models/like_post_model.dart';
 import 'package:client/features/post/models/save_post_model.dart';
 
 class UserModel {
@@ -11,12 +12,14 @@ class UserModel {
   final String id;
   final String token;
   final List<SavePostModel> savedPosts;
+  final List<LikePostModel> likedPosts;
   UserModel({
     required this.username,
     required this.email,
     required this.id,
     required this.token,
     required this.savedPosts,
+    required this.likedPosts,
   });
 
   UserModel copyWith({
@@ -25,6 +28,7 @@ class UserModel {
     String? id,
     String? token,
     List<SavePostModel>? savedPosts,
+    List<LikePostModel>? likedPosts,
   }) {
     return UserModel(
       username: username ?? this.username,
@@ -32,6 +36,7 @@ class UserModel {
       id: id ?? this.id,
       token: token ?? this.token,
       savedPosts: savedPosts ?? this.savedPosts,
+      likedPosts: likedPosts ?? this.likedPosts,
     );
   }
 
@@ -42,6 +47,7 @@ class UserModel {
       'id': id,
       'token': token,
       'savedPosts': savedPosts.map((x) => x.toMap()).toList(),
+      'likedPosts': likedPosts.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -51,13 +57,16 @@ class UserModel {
       email: map['email'] ?? "",
       id: map['id'] ?? "",
       token: map['token'] ?? "",
-      savedPosts: map['savedPosts'] != null
-          ? List<SavePostModel>.from(
-              (map['savedPosts'] ?? []).map(
-                (x) => SavePostModel.fromMap(x as Map<String, dynamic>),
-              ),
-            )
-          : [], // Handle null case for savedPosts
+      savedPosts: List<SavePostModel>.from(
+        (map['savedPosts'] ?? []).map<SavePostModel>(
+          (x) => SavePostModel.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+      likedPosts: List<LikePostModel>.from(
+        (map['likedPosts'] ?? []).map<LikePostModel>(
+          (x) => LikePostModel.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
     );
   }
 
@@ -68,7 +77,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(username: $username, email: $email, id: $id, token: $token, savedPosts: $savedPosts)';
+    return 'UserModel(username: $username, email: $email, id: $id, token: $token, savedPosts: $savedPosts, likedPosts: $likedPosts)';
   }
 
   @override
@@ -79,7 +88,8 @@ class UserModel {
         other.email == email &&
         other.id == id &&
         other.token == token &&
-        listEquals(other.savedPosts, savedPosts);
+        listEquals(other.savedPosts, savedPosts) &&
+        listEquals(other.likedPosts, likedPosts);
   }
 
   @override
@@ -88,6 +98,7 @@ class UserModel {
         email.hashCode ^
         id.hashCode ^
         token.hashCode ^
-        savedPosts.hashCode;
+        savedPosts.hashCode ^
+        likedPosts.hashCode;
   }
 }

@@ -35,9 +35,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: selectedIndex == 1
-          ? Container() // Placeholder for the add action, if needed
-          : pages[selectedIndex],
+      body: selectedIndex == 1 ? Container() : pages[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (value) {

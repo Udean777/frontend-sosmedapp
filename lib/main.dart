@@ -14,6 +14,7 @@ final initializationProvider = FutureProvider<void>((ref) async {
   final postLocalRepository = PostLocalRepository();
   await postLocalRepository.initHive();
   await ref.read(postsViewmodelProvider.notifier).loadSavedPosts();
+  await ref.read(postsViewmodelProvider.notifier).loadLikedPosts();
 });
 
 void main() async {
