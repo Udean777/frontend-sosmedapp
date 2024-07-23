@@ -2,6 +2,7 @@ import 'package:client/core/theme/app_palette.dart';
 import 'package:client/features/post/view/pages/posts_page.dart';
 import 'package:client/features/saved/view/pages/saved_posts_page.dart';
 import 'package:client/features/search/view/pages/search_page.dart';
+import 'package:client/features/upload/view/pages/upload_post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,16 +23,31 @@ class _HomePageState extends ConsumerState<HomePage> {
     SavedPostsPages(),
   ];
 
+  void _onAddButtonPressed() {
+    // Implement your image picking logic here
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => const UploadPost(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[selectedIndex],
+      body: selectedIndex == 1
+          ? Container() // Placeholder for the add action, if needed
+          : pages[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (value) {
-          setState(() {
-            selectedIndex = value;
-          });
+          if (value == 1) {
+            _onAddButtonPressed();
+          } else {
+            setState(() {
+              selectedIndex = value;
+            });
+          }
         },
         items: [
           BottomNavigationBarItem(
@@ -49,8 +65,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             label: "",
             icon: Icon(
               selectedIndex == 1
-                  ? CupertinoIcons.search_circle_fill
-                  : CupertinoIcons.search_circle,
+                  ? CupertinoIcons.add_circled_solid
+                  : CupertinoIcons.add_circled,
               size: 25,
               color: Palette.whiteColor,
             ),

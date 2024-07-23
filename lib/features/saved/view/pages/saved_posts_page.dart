@@ -1,5 +1,9 @@
+import 'package:client/core/providers/current_user_notifier.dart';
+import 'package:client/core/theme/app_palette.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loading.dart';
 import 'package:client/features/post/viewmodel/posts_viewmodel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,27 +12,147 @@ class SavedPostsPages extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userSaved = ref
+        .watch(currentUserNotifierProvider.select((data) => data!.savedPosts));
+
     return ref.watch(getSavedPostProvider).when(
           data: (data) {
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (ctx, index) {
-                final post = data[index];
-
-                print(data);
-
-                return ListTile(
-                  title: Center(
-                    child: Text(
-                      post.caption,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  "Saved Posts",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
+                ),
+                centerTitle: true,
+              ),
+              body: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (ctx, index) {
+                  final post = data[index];
+
+                  // print(post);
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CircleAvatar(
+                              radius: 20,
+                              backgroundImage: null,
+                              child: Icon(CupertinoIcons.person),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    post.user.username,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    timeAgo(post.created_at),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Image.asset(
+                                "assets/images/icons8-ellipsis-90.png",
+                                width: 15,
+                                height: 15,
+                                color: Palette.greyColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          post.caption,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 180,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(post.image_url),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(CupertinoIcons.heart),
+                              color: Palette.greyColor,
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(CupertinoIcons.chat_bubble),
+                              color: Palette.greyColor,
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(CupertinoIcons.reply),
+                              color: Palette.greyColor,
+                            ),
+                            const Spacer(),
+                            IconButton(
+                              onPressed: () async {
+                                await ref
+                                    .read(postsViewmodelProvider.notifier)
+                                    .savedPost(postId: post.id);
+                              },
+                              icon: Icon(userSaved
+                                      .where((save) => save.post_id == post.id)
+                                      .toList()
+                                      .isNotEmpty
+                                  ? CupertinoIcons.bookmark_solid
+                                  : CupertinoIcons.bookmark),
+                              color: userSaved
+                                      .where((save) => save.post_id == post.id)
+                                      .toList()
+                                      .isNotEmpty
+                                  ? Palette.whiteColor
+                                  : Palette.greyColor,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             );
           },
           error: (error, st) {

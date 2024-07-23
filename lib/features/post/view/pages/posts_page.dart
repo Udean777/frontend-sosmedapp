@@ -6,7 +6,6 @@ import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loading.dart';
 import 'package:client/features/post/models/save_post_model.dart';
 import 'package:client/features/post/viewmodel/posts_viewmodel.dart';
-import 'package:client/features/upload/view/pages/upload_post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +18,7 @@ class PostsPage extends ConsumerWidget {
     final userSaved = ref
         .watch(currentUserNotifierProvider.select((data) => data!.savedPosts));
 
-    print("User saved (in build): $userSaved");
+    // print("User saved (in build): $userSaved");
 
     return Scaffold(
       appBar: AppBar(
@@ -36,17 +35,6 @@ class PostsPage extends ConsumerWidget {
             onPressed: () {},
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (ctx) => const UploadPost(),
-            ),
-          );
-        },
-        backgroundColor: Palette.gradient1,
-        child: const Icon(CupertinoIcons.add),
       ),
       body: Column(
         children: [
