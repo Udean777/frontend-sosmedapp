@@ -51,6 +51,7 @@ class MyApp extends ConsumerWidget {
       title: 'Social Media',
       theme: AppTheme.darkThemeMode,
       home: currUser == null ? const Signup() : const HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
