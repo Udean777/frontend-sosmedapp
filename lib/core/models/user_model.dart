@@ -53,7 +53,7 @@ class UserModel {
       token: map['token'] ?? "",
       savedPosts: map['savedPosts'] != null
           ? List<SavePostModel>.from(
-              (map['savedPosts'] as List<dynamic>).map(
+              (map['savedPosts'] ?? []).map(
                 (x) => SavePostModel.fromMap(x as Map<String, dynamic>),
               ),
             )

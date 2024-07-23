@@ -8,11 +8,16 @@ class PostModel {
   final String image_url;
   final String caption;
   final UserModel user;
+  final DateTime created_at;
+  final DateTime updated_at;
+
   PostModel({
     required this.id,
     required this.image_url,
     required this.caption,
     required this.user,
+    required this.created_at,
+    required this.updated_at,
   });
 
   PostModel copyWith({
@@ -20,12 +25,16 @@ class PostModel {
     String? image_url,
     String? caption,
     UserModel? user,
+    DateTime? created_at,
+    DateTime? updated_at,
   }) {
     return PostModel(
       id: id ?? this.id,
       image_url: image_url ?? this.image_url,
       caption: caption ?? this.caption,
       user: user ?? this.user,
+      created_at: created_at ?? this.created_at,
+      updated_at: updated_at ?? this.updated_at,
     );
   }
 
@@ -35,6 +44,8 @@ class PostModel {
       'image_url': image_url,
       'caption': caption,
       'user': user.toMap(),
+      'created_at': created_at.toIso8601String(),
+      'updated_at': updated_at.toIso8601String(),
     };
   }
 
@@ -43,7 +54,16 @@ class PostModel {
       id: map['id'] ?? "",
       image_url: map['image_url'] ?? "",
       caption: map['caption'] ?? "",
-      user: UserModel.fromMap(map['user'] as Map<String, dynamic>),
+      user: map['user'] != null
+          ? UserModel.fromMap(map['user'] as Map<String, dynamic>)
+          : UserModel(
+              id: '', username: '', email: '', token: "", savedPosts: []),
+      created_at: map['created_at'] != null
+          ? DateTime.tryParse(map['created_at'] as String) ?? DateTime.now()
+          : DateTime.now(),
+      updated_at: map['updated_at'] != null
+          ? DateTime.tryParse(map['updated_at'] as String) ?? DateTime.now()
+          : DateTime.now(),
     );
   }
 
@@ -54,7 +74,7 @@ class PostModel {
 
   @override
   String toString() {
-    return 'PostModel(id: $id, image_url: $image_url, caption: $caption, user: $user)';
+    return 'PostModel(id: $id, image_url: $image_url, caption: $caption, user: $user, created_at: $created_at, updated_at: $updated_at)';
   }
 
   @override
@@ -64,11 +84,18 @@ class PostModel {
     return other.id == id &&
         other.image_url == image_url &&
         other.caption == caption &&
-        other.user == user;
+        other.user == user &&
+        other.created_at == created_at &&
+        other.updated_at == updated_at;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ image_url.hashCode ^ caption.hashCode ^ user.hashCode;
+    return id.hashCode ^
+        image_url.hashCode ^
+        caption.hashCode ^
+        user.hashCode ^
+        created_at.hashCode ^
+        updated_at.hashCode;
   }
 }

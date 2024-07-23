@@ -1,6 +1,6 @@
 import 'package:client/core/theme/app_palette.dart';
 import 'package:client/features/post/view/pages/posts_page.dart';
-import 'package:client/features/saved/view/pages/saved_posts_pages.dart';
+import 'package:client/features/saved/view/pages/saved_posts_page.dart';
 import 'package:client/features/search/view/pages/search_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

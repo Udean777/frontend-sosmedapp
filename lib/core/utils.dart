@@ -30,3 +30,24 @@ Future<File?> pickImage() async {
     return null;
   }
 }
+
+String timeAgo(DateTime createdAt) {
+  final now = DateTime.now();
+  final difference = now.difference(createdAt);
+
+  if (difference.inMinutes < 1) {
+    return 'just now';
+  } else if (difference.inSeconds < 60) {
+    return '${difference.inSeconds}s';
+  } else if (difference.inMinutes < 60) {
+    return '${difference.inMinutes}m';
+  } else if (difference.inHours < 24) {
+    return '${difference.inHours}h';
+  } else if (difference.inDays < 7) {
+    return '${difference.inDays}d';
+  } else if (difference.inDays < 30) {
+    return '${(difference.inDays / 7).floor()}w';
+  } else {
+    return '${(difference.inDays / 30).floor()}mo';
+  }
+}

@@ -35,7 +35,7 @@ final getSavedPostProvider =
 );
 
 typedef GetSavedPostRef = AutoDisposeFutureProviderRef<List<PostModel>>;
-String _$postsViewmodelHash() => r'fae1df780d8b9bcabe372f5e7fb7607d34f7def8';
+String _$postsViewmodelHash() => r'0ad43e11eb4a40befe3bb5d729ef7529e2f71ce2';
 
 /// See also [PostsViewmodel].
 @ProviderFor(PostsViewmodel)

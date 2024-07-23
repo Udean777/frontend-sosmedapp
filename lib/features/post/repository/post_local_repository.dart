@@ -1,6 +1,6 @@
-import 'package:client/features/post/models/post_model.dart';
+import 'package:client/features/post/models/save_post_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 part 'post_local_repository.g.dart';
 
@@ -10,15 +10,22 @@ PostLocalRepository postLocalRepository(PostLocalRepositoryRef ref) {
 }
 
 class PostLocalRepository {
-  final Box box = Hive.box();
+  static const String _savedPostsBoxName = 'savedPosts';
 
-  List<PostModel> loadSongs() {
-    List<PostModel> posts = [];
+  Future<void> initHive() async {
+    await Hive.initFlutter();
+    Hive.registerAdapter(SavePostModelAdapter());
+    await Hive.openBox<SavePostModel>(_savedPostsBoxName);
+  }
 
-    for (var key in box.keys) {
-      posts.add(PostModel.fromJson(box.get(key)));
-    }
+  Future<List<SavePostModel>> loadSavedPosts() async {
+    final box = await Hive.openBox<SavePostModel>(_savedPostsBoxName);
+    return box.values.toList();
+  }
 
-    return posts;
+  Future<void> savePosts(List<SavePostModel> posts) async {
+    final box = await Hive.openBox<SavePostModel>(_savedPostsBoxName);
+    await box.clear();
+    await box.addAll(posts);
   }
 }

@@ -9,15 +9,18 @@ class PostItem extends StatelessWidget {
   final String imageUrl;
   final String? profileImageUrl;
   final VoidCallback onSavePost;
+  final bool isSaved;
 
-  const PostItem(
-      {super.key,
-      required this.username,
-      required this.timeAgo,
-      required this.caption,
-      required this.imageUrl,
-      this.profileImageUrl,
-      required this.onSavePost});
+  const PostItem({
+    super.key,
+    required this.username,
+    required this.timeAgo,
+    required this.caption,
+    required this.imageUrl,
+    this.profileImageUrl,
+    required this.onSavePost,
+    required this.isSaved,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +121,10 @@ class PostItem extends StatelessWidget {
               const Spacer(),
               IconButton(
                 onPressed: onSavePost,
-                icon: const Icon(CupertinoIcons.bookmark),
-                color: Palette.greyColor,
+                icon: Icon(isSaved
+                    ? CupertinoIcons.bookmark_solid
+                    : CupertinoIcons.bookmark),
+                color: isSaved ? Palette.whiteColor : Palette.greyColor,
               ),
             ],
           ),

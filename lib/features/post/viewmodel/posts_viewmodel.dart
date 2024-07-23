@@ -3,7 +3,7 @@
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/features/post/models/post_model.dart';
 import 'package:client/features/post/models/save_post_model.dart';
-// import 'package:client/features/post/repository/post_local_repository.dart';
+import 'package:client/features/post/repository/post_local_repository.dart';
 import 'package:client/features/post/repository/post_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -37,17 +37,19 @@ Future<List<PostModel>> getSavedPost(GetSavedPostRef ref) async {
 @riverpod
 class PostsViewmodel extends _$PostsViewmodel {
   late PostRepository _postRepository;
-  // late PostLocalRepository _postLocalRepository;
+  late PostLocalRepository _localRepository;
 
   @override
   AsyncValue? build() {
     _postRepository = ref.read(postRepositoryProvider);
-    // _postLocalRepository = ref.read(postLocalRepositoryProvider);
+    _localRepository = ref.read(postLocalRepositoryProvider);
     return null;
   }
 
   Future<void> savedPost({required String postId}) async {
     state = const AsyncValue.loading();
+
+    final now = DateTime.now();
 
     final res = await _postRepository.savedPost(
       token: ref.read(currentUserNotifierProvider)!.token,
@@ -57,38 +59,50 @@ class PostsViewmodel extends _$PostsViewmodel {
     final val = switch (res) {
       Left(value: final l) => state =
           AsyncValue.error(l.message, StackTrace.current),
-      Right(value: final r) => _savedPostSuccess(r, postId)
+      Right(value: final r) => _savedPostSuccess(r, postId, now)
     };
 
-    print(val);
+    print("Result of savedPost: $val");
   }
 
-  AsyncValue _savedPostSuccess(bool isSaved, String postId) {
+  Future<AsyncValue<bool>> _savedPostSuccess(
+      bool isSaved, String postId, DateTime now) async {
     final userNotifier = ref.read(currentUserNotifierProvider.notifier);
+    final currentUser = ref.read(currentUserNotifierProvider)!;
+
+    List<SavePostModel> savedPosts = await _localRepository.loadSavedPosts();
+    print("Current saved posts: $savedPosts");
 
     if (isSaved) {
-      userNotifier.addUser(
-        ref.read(currentUserNotifierProvider)!.copyWith(
-          savedPosts: [
-            ...ref.read(currentUserNotifierProvider)!.savedPosts,
-            SavePostModel(id: "", post_id: postId, user_id: ""),
-          ],
-        ),
+      final newSavedPost = SavePostModel(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        post_id: postId,
+        user_id: currentUser.id,
+        created_at: now,
+        updated_at: now,
       );
+
+      savedPosts = [...savedPosts, newSavedPost];
     } else {
-      userNotifier.addUser(
-        ref.read(currentUserNotifierProvider)!.copyWith(
-              savedPosts: ref
-                  .read(currentUserNotifierProvider)!
-                  .savedPosts
-                  .where(
-                    (savePost) => savePost.post_id != postId,
-                  )
-                  .toList(),
-            ),
-      );
+      savedPosts =
+          savedPosts.where((savePost) => savePost.post_id != postId).toList();
     }
+
+    await _localRepository.savePosts(savedPosts);
+    print("Updated saved posts: $savedPosts");
+
+    final updatedUser = currentUser.copyWith(savedPosts: savedPosts);
+    userNotifier.addUser(updatedUser);
+
     ref.invalidate(getSavedPostProvider);
-    return state = AsyncValue.data(isSaved);
+    state = AsyncValue.data(isSaved);
+    return AsyncValue.data(isSaved);
+  }
+
+  Future<void> loadSavedPosts() async {
+    final savedPosts = await _localRepository.loadSavedPosts();
+    final userNotifier = ref.read(currentUserNotifierProvider.notifier);
+    final currentUser = ref.read(currentUserNotifierProvider)!;
+    userNotifier.addUser(currentUser.copyWith(savedPosts: savedPosts));
   }
 }
