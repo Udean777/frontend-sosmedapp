@@ -1,13 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names
 import 'dart:convert';
 
+import 'package:client/core/models/user_model.dart';
+
 class CommentModel {
   final String id;
   final String post_id;
   final String user_id;
   final String content;
   final DateTime created_at;
-  final DateTime updated_at;
+  final DateTime? updated_at;
+  final UserModel user;
   CommentModel({
     required this.id,
     required this.post_id,
@@ -15,6 +18,7 @@ class CommentModel {
     required this.content,
     required this.created_at,
     required this.updated_at,
+    required this.user,
   });
 
   CommentModel copyWith({
@@ -24,6 +28,7 @@ class CommentModel {
     String? content,
     DateTime? created_at,
     DateTime? updated_at,
+    UserModel? user,
   }) {
     return CommentModel(
       id: id ?? this.id,
@@ -32,6 +37,7 @@ class CommentModel {
       content: content ?? this.content,
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
+      user: user ?? this.user,
     );
   }
 
@@ -42,18 +48,21 @@ class CommentModel {
       'user_id': user_id,
       'content': content,
       'created_at': created_at.millisecondsSinceEpoch,
-      'updated_at': updated_at.millisecondsSinceEpoch,
+      'updated_at': updated_at?.millisecondsSinceEpoch,
+      'user': user.toMap(),
     };
   }
 
   factory CommentModel.fromMap(Map<String, dynamic> map) {
     return CommentModel(
-      id: map['id'] ?? "",
-      post_id: map['post_id'] ?? "",
-      user_id: map['user_id'] ?? "",
-      content: map['content'] ?? "",
-      created_at: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
-      updated_at: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
+      id: map['id'] ?? '',
+      user_id: map['user_id'] ?? '',
+      post_id: map['post_id'] ?? '',
+      content: map['content'] ?? '',
+      created_at: DateTime.parse(map['created_at']),
+      updated_at:
+          map['updated_at'] != null ? DateTime.parse(map['updated_at']) : null,
+      user: UserModel.fromMap(map['user'] as Map<String, dynamic>),
     );
   }
 
@@ -64,7 +73,7 @@ class CommentModel {
 
   @override
   String toString() {
-    return 'CommentModel(id: $id, post_id: $post_id, user_id: $user_id, content: $content, created_at: $created_at, updated_at: $updated_at)';
+    return 'CommentModel(id: $id, post_id: $post_id, user_id: $user_id, content: $content, created_at: $created_at, updated_at: $updated_at, user: $user)';
   }
 
   @override
@@ -76,7 +85,8 @@ class CommentModel {
         other.user_id == user_id &&
         other.content == content &&
         other.created_at == created_at &&
-        other.updated_at == updated_at;
+        other.updated_at == updated_at &&
+        other.user == user;
   }
 
   @override
@@ -86,6 +96,7 @@ class CommentModel {
         user_id.hashCode ^
         content.hashCode ^
         created_at.hashCode ^
-        updated_at.hashCode;
+        updated_at.hashCode ^
+        user.hashCode;
   }
 }

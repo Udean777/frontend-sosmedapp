@@ -15,12 +15,19 @@ part 'posts_viewmodel.g.dart';
 Future<List<PostModel>> getAllPosts(GetAllPostsRef ref) async {
   final token =
       ref.watch(currentUserNotifierProvider.select((user) => user!.token));
-  final res = await ref.read(postRepositoryProvider).getAllPosts(token: token);
+  try {
+    final res =
+        await ref.read(postRepositoryProvider).getAllPosts(token: token);
 
-  return switch (res) {
-    Left(value: final l) => throw l.message,
-    Right(value: final r) => r,
-  };
+    return switch (res) {
+      Left(value: final l) => throw l.message,
+      Right(value: final r) => r,
+    };
+  } catch (e, stackTrace) {
+    print("Error in getAllPosts: $e");
+    print("Stack trace: $stackTrace");
+    rethrow;
+  }
 }
 
 @riverpod

@@ -1,10 +1,9 @@
-// ignore_for_file: avoid_print,, use_build_context_synchronously, unused_result
+// ignore_for_file: avoid_print
 
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/theme/app_palette.dart';
 import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loading.dart';
-import 'package:client/features/post/models/save_post_model.dart';
 import 'package:client/features/post/viewmodel/posts_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ class PostsPage extends ConsumerWidget {
     final userSaved = user?.savedPosts ?? [];
     final userLiked = user?.likedPosts ?? [];
 
-    print("User saved (in build): $userLiked");
+    // print("User saved (in build): $userLiked");
 
     return Scaffold(
       appBar: AppBar(
@@ -50,7 +49,7 @@ class PostsPage extends ConsumerWidget {
                         itemBuilder: (ctx, index) {
                           final post = posts[index];
 
-                          // print(isSaved);
+                          // print(post);
 
                           return Padding(
                             padding: const EdgeInsets.all(8),
@@ -188,6 +187,77 @@ class PostsPage extends ConsumerWidget {
                                     ),
                                   ],
                                 ),
+                                if (post.comments.isNotEmpty) ...[
+                                  const Text(
+                                    'Comments:',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: post.comments.length,
+                                    itemBuilder: (context, commentIndex) {
+                                      final comment =
+                                          post.comments[commentIndex];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const CircleAvatar(
+                                              radius: 12,
+                                              backgroundImage: null,
+                                              child: Icon(CupertinoIcons.person,
+                                                  size: 12),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        comment.user.username,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 8,
+                                                      ),
+                                                      Text(
+                                                        timeAgo(
+                                                            comment.created_at),
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(comment.content),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                                const SizedBox(
+                                  height: 8,
+                                ),
                               ],
                             ),
                           );
@@ -209,9 +279,5 @@ class PostsPage extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  bool isPostSaved(List<SavePostModel> savedPosts, String postId) {
-    return savedPosts.any((savedPost) => savedPost.post_id == postId);
   }
 }

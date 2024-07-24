@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:client/core/constants/server_constants.dart';
@@ -23,23 +25,30 @@ class PostRepository {
           Uri.parse("${ServerConstants.serverUrl}/post/list"),
           headers: {"Content-Type": "application/json", "x-auth-token": token});
 
-      var resBodyMap = jsonDecode(res.body);
+      print("API Response status code: ${res.statusCode}");
+      print("API Response body: ${res.body}");
 
       if (res.statusCode != 200) {
-        resBodyMap = resBodyMap as Map<String, dynamic>;
-        return Left(FailureApp(resBodyMap["detail"]));
+        final errorBody = jsonDecode(res.body);
+        return Left(
+            FailureApp(errorBody["detail"] ?? "Unknown error occurred"));
       }
 
-      resBodyMap = resBodyMap as List;
-
+      final List<dynamic> resBodyList = jsonDecode(res.body);
       List<PostModel> posts = [];
 
-      for (var map in resBodyMap) {
-        posts.add(PostModel.fromMap(map));
+      for (var map in resBodyList) {
+        try {
+          posts.add(PostModel.fromMap(map));
+        } catch (e) {
+          print("Error parsing post: $e");
+          print("Problematic data: $map");
+        }
       }
 
       return Right(posts);
     } catch (e) {
+      print("Error in getAllPosts: $e");
       return Left(FailureApp(e.toString()));
     }
   }
