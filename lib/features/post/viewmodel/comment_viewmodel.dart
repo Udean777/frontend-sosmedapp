@@ -3,25 +3,11 @@
 import 'package:client/core/models/comment_model.dart';
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/features/post/repository/comment_repository.dart';
+import 'package:client/features/post/viewmodel/posts_viewmodel.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'comment_viewmodel.g.dart';
-
-@riverpod
-Future<List<CommentModel>> getComments(
-    GetCommentsRef ref, String postId) async {
-  final token =
-      ref.watch(currentUserNotifierProvider.select((user) => user!.token));
-  final res = await ref
-      .read(commentRepositoryProvider)
-      .getComments(token: token, postId: postId);
-
-  return switch (res) {
-    Left(value: final l) => throw l.message,
-    Right(value: final r) => r,
-  };
-}
 
 @riverpod
 class CommentViewmodel extends _$CommentViewmodel {
@@ -59,9 +45,10 @@ class CommentViewmodel extends _$CommentViewmodel {
   }
 
   Future<AsyncValue<CommentModel>> _addCommentSuccess(
-      CommentModel comment) async {
+    CommentModel comment,
+  ) async {
+    ref.invalidate(getAllPostsProvider);
     state = AsyncValue.data(comment);
-    ref.invalidate(getCommentsProvider(comment.post_id));
     return AsyncValue.data(comment);
   }
 }

@@ -4,16 +4,30 @@ import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/theme/app_palette.dart';
 import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loading.dart';
+import 'package:client/features/post/viewmodel/comment_viewmodel.dart';
 import 'package:client/features/post/viewmodel/posts_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PostsPage extends ConsumerWidget {
+class PostsPage extends ConsumerStatefulWidget {
   const PostsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PostsPage> createState() => _PostsPageState();
+}
+
+class _PostsPageState extends ConsumerState<PostsPage> {
+  final Map<String, TextEditingController> _commentControllers = {};
+
+  @override
+  void dispose() {
+    _commentControllers.forEach((_, controller) => controller.dispose());
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final user = ref.watch(currentUserNotifierProvider);
     final userSaved = user?.savedPosts ?? [];
     final userLiked = user?.likedPosts ?? [];
@@ -48,6 +62,10 @@ class PostsPage extends ConsumerWidget {
                         itemCount: posts.length,
                         itemBuilder: (ctx, index) {
                           final post = posts[index];
+                          if (!_commentControllers.containsKey(post.id)) {
+                            _commentControllers[post.id] =
+                                TextEditingController();
+                          }
 
                           // print(post);
 
@@ -255,6 +273,38 @@ class PostsPage extends ConsumerWidget {
                                     },
                                   ),
                                 ],
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller:
+                                            _commentControllers[post.id],
+                                        decoration: const InputDecoration(
+                                          hintText: "Add a comment...",
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () async {
+                                        final content =
+                                            _commentControllers[post.id]!.text;
+                                        if (content.isNotEmpty) {
+                                          await ref
+                                              .read(commentViewmodelProvider
+                                                  .notifier)
+                                              .addComment(
+                                                postId: post.id,
+                                                content: content,
+                                              );
+                                          _commentControllers[post.id]!.clear();
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.send,
+                                      ),
+                                    )
+                                  ],
+                                ),
                                 const SizedBox(
                                   height: 8,
                                 ),

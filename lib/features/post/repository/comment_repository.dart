@@ -15,39 +15,6 @@ CommentRepository commentRepository(CommentRepositoryRef ref) {
 }
 
 class CommentRepository {
-  Future<Either<FailureApp, List<CommentModel>>> getComments({
-    required String token,
-    required String postId,
-  }) async {
-    try {
-      final res = await http.get(
-          Uri.parse("${ServerConstants.serverUrl}/post/$postId/comments"),
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          });
-
-      var resBodyMap = jsonDecode(res.body);
-
-      if (res.statusCode != 200) {
-        resBodyMap = resBodyMap as Map<String, dynamic>;
-        return Left(FailureApp(resBodyMap["message"]));
-      }
-
-      resBodyMap = resBodyMap as List;
-
-      List<CommentModel> comments = [];
-
-      for (var map in resBodyMap) {
-        comments.add(CommentModel.fromMap(map));
-      }
-
-      return Right(comments);
-    } catch (e) {
-      return Left(FailureApp(e.toString()));
-    }
-  }
-
   Future<Either<FailureApp, CommentModel>> addComment({
     required String token,
     required String postId,
@@ -65,7 +32,7 @@ class CommentRepository {
         body: jsonEncode(
           {
             "content": content,
-            "postId": postId,
+            "post_id": postId,
             "created_at": createdAt.toIso8601String(),
             "updated_at": updatedAt.toIso8601String(),
           },
@@ -75,7 +42,7 @@ class CommentRepository {
       var resBodyMap = jsonDecode(res.body);
 
       if (res.statusCode != 201) {
-        resBodyMap = resBodyMap as Map<String, dynamic>;
+        resBodyMap = resBodyMap as Map;
         return Left(FailureApp(resBodyMap["detail"]));
       }
 
