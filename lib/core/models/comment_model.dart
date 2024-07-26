@@ -54,7 +54,7 @@ class CommentModel {
   }
 
   factory CommentModel.fromMap(Map<String, dynamic> map) {
-    print("Mapping comment data: $map");
+    // print("Mapping comment data: $map");
     return CommentModel(
       id: map['id'] ?? '',
       user_id: map['user_id'] ?? '',

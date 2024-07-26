@@ -6,7 +6,7 @@ part of 'comment_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$commentViewmodelHash() => r'2eb925b7ef89e9622d6766fb6ff0aa0b4b1e4fa8';
+String _$commentViewmodelHash() => r'478c26b0a0f93485a42a966fbcd1ae2db281b5f5';
 
 /// See also [CommentViewmodel].
 @ProviderFor(CommentViewmodel)

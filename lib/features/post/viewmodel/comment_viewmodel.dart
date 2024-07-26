@@ -3,7 +3,6 @@
 import 'package:client/core/models/comment_model.dart';
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/features/post/repository/comment_repository.dart';
-import 'package:client/features/post/viewmodel/posts_viewmodel.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,6 +11,7 @@ part 'comment_viewmodel.g.dart';
 @riverpod
 class CommentViewmodel extends _$CommentViewmodel {
   late CommentRepository _commentRepository;
+  List<CommentModel> comments = [];
 
   @override
   AsyncValue? build() {
@@ -38,16 +38,15 @@ class CommentViewmodel extends _$CommentViewmodel {
     final val = switch (res) {
       Left(value: final l) => state =
           AsyncValue.error(l.message, StackTrace.current),
-      Right(value: final r) => _addCommentSuccess(r)
+      Right(value: final r) => _addCommentSuccess(r),
     };
 
     print("Result of addComment: $val");
   }
 
   Future<AsyncValue<CommentModel>> _addCommentSuccess(
-    CommentModel comment,
-  ) async {
-    ref.invalidate(getAllPostsProvider);
+      CommentModel comment) async {
+    comments = [...comments, comment]; // Update the comments list
     state = AsyncValue.data(comment);
     return AsyncValue.data(comment);
   }
